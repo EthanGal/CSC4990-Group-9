@@ -1,0 +1,11 @@
+1. Download MySQL Workbench from https://dev.mysql.com/downloads/workbench/
+
+2. Once downloaded, select the + sign next to MySQL Connections to set up new connection
+
+3. Set up new Connection with these parameters
+Connection Name: InclusifyDB
+Host :inclusifydb.ce3e42isu88z.us-east-1.rds.amazonaws.com
+Port: 3306
+User: dbMasterLog
+Pass: inclusifyDBPWD
+- For password, you will need to click on Store in Vault, and it will  prompt you to enter the password.	
