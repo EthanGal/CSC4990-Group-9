@@ -1,0 +1,13 @@
+{
+  "name": "CSC4990-Group-9",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "@testing-library/react": "^16.2.0"
+  }
+}
