@@ -24,12 +24,6 @@ app.get ('/', (req,res) =>{
    res.send('Backend works Test1')
 });
 
-app.get('/test-db', (req, res) => {
-    db.query('INSERT INTO Users (UserID, UserName) VALUES (1,"TestUser2")', (err, results) => {
-        if (err) return res.status(500).send('Database error: ' + err.message);
-        res.json({ success: true, insertedId: results.insertId });
-    });
-});
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
