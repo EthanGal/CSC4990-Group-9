@@ -17,7 +17,7 @@ const Reports = () => {
                         ) : (
                             <>
                                 <p><strong>Title:</strong> {report.title}</p>
-                                <p><strong>Accessibility Score: </strong> {report.accessibilityScore} </p>
+                                <p><strong>Placeholder Accessibility Score: </strong> {report.accessibilityScore} </p>
                             </>
                         )}
                     </div>
