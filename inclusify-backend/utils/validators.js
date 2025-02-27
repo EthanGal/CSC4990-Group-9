@@ -6,4 +6,4 @@ const isValidUrl = (url) => {
         return false;
     }
 };
-module.exportsw = {isValidUrl};
+module.exports = {isValidUrl};

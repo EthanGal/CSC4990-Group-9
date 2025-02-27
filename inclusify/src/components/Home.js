@@ -1,9 +1,13 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import Loading from "./Loading";
 
 const Home = () => {
     const [urls, setUrls] = useState (["", "", ""]);
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [scanRequest, setScanRequest] = useState(null);
     const navigate = useNavigate();
 
     const handleChange = (index,value) => {
@@ -13,12 +17,48 @@ const Home = () => {
     }
 
     const handleSubmit = async () => {
+        setLoading(true);
+        setProgress(0);
+
+        const source = axios.CancelToken.source();
+        setScanRequest(() => source.cancel);
+
+        const interval = setInterval(()=> {
+            setProgress((prev) => (prev < 90 ? prev + 1 : prev));
+        }, 250);
+
         try {
-            const response = await axios.post("http://localhost:5000/scan", {urls});
+            const response = await axios.post("http://localhost:5000/api/scan",
+                { urls },
+                {cancelToken: source.token});
             navigate ("/reports", {state: {reports: response.data.reports}});
+
+
+            clearInterval(interval);
+            setProgress (100);
+
+            setTimeout(() => {
+                navigate ("/reports", {state: {reports: response.data.reports}});
+                setLoading(false);
+            }, 500);
         } catch (error) {
-               console.error ("Error Scanning URLs:", error);
+            clearInterval(interval);
+            setLoading(false);
+
+            if (axios.isCancel(error)){
+                console.log("Scan canceled by user.");
+            } else {
+                console.error("Error Scanning URLs:", error);
+            }
         }
+    }
+
+    const handleCancel= () => {
+        if (scanRequest) {
+            scanRequest ();
+        }
+        setLoading(false);
+        setProgress(0);
     }
     return (
         <div className="container ">
@@ -35,7 +75,11 @@ const Home = () => {
                     style={{display: "block", marginBottom:"10px"}} //todo:change this to css
                 />
             ))}
-            <button onClick = {handleSubmit}> Scan Websites </button>
+            <button className="btn btn-primary" onClick = {handleSubmit} disabled={loading}>
+                {loading ? "Scanning..." :"Scan Websites"}
+            </button>
+
+            {loading && <Loading progress = {progress} onCancel = {handleCancel} />}
         </div>
     );
 };
