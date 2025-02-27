@@ -5,7 +5,7 @@ const Navbar = () => (
     <nav className="navbar navbar-light bg-light mb-3">
         <div className="container-fluid d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center">
-                <span className="mb-0 h4">Test Navbar</span>
+                <span className="text-primary mb-0 h2">Inclusify</span>
             </div>
 
             <div className="d-flex me-4">

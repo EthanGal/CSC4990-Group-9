@@ -42,7 +42,7 @@ const scanWebsite = async (url) => {
 
         await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36")
         await page.setExtraHTTPHeaders({"Accept-Language": "en-US,en;q=0.9"})
-        await page.goto(url, {timeout: 40000, waitUntil:'domcontentloaded'});
+        await page.goto(url, {timeout: 50000, waitUntil:'domcontentloaded'});
 
         await page.waitForSelector('body', {timeout: 20000});
 
@@ -52,7 +52,7 @@ const scanWebsite = async (url) => {
 
         await browser.close();
 
-        console.log(`test title: ${title} + ${htmlContent}` );
+        console.log(`test title: ${title} + Content: ${htmlContent}`);
         return {url, title, htmlContent, accessibilityScore};
 
 
