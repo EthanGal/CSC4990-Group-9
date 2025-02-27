@@ -9,3 +9,6 @@ Port: 3306
 User: dbMasterLog
 Pass: inclusifyDBPWD
 - For password, you will need to click on Store in Vault, and it will  prompt you to enter the password.	
+
+to start frontend, change directory (cd) to inclusify then npm start
+to start backend, change directory (cd) to inclusify-backend then nodemon start

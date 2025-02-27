@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import Loading from './Loading';
-
+import Loading from "./Loading";
 
 const Home = () => {
     const [urls, setUrls] = useState (["", "", ""]);
@@ -18,19 +17,22 @@ const Home = () => {
     }
 
     const handleSubmit = async () => {
-
         setLoading(true);
         setProgress(0);
-        //progress bar
+
+        const source = axios.CancelToken.source();
+        setScanRequest(() => source.cancel);
+
         const interval = setInterval(()=> {
             setProgress((prev) => (prev < 90 ? prev + 1 : prev));
-        }, 250); //change progress bar speed
+        }, 250);
 
         try {
-            const source = axios.CancelToken.source();
-            setScanRequest(() => source.cancel);
+            const response = await axios.post("http://localhost:5000/api/scan",
+                { urls },
+                {cancelToken: source.token});
+            navigate ("/reports", {state: {reports: response.data.reports}});
 
-            const response = await axios.post("http://localhost:5000/scan", {urls}, {cancelToken: source.token});
 
             clearInterval(interval);
             setProgress (100);
@@ -40,16 +42,17 @@ const Home = () => {
                 setLoading(false);
             }, 500);
         } catch (error) {
-               clearInterval(interval);
-               setLoading(false);
+            clearInterval(interval);
+            setLoading(false);
 
-               if (axios.isCancel(error)){
-                   console.log("Scan canceled by user.");
-               } else {
-                   console.error("Error Scanning URLs:", error);
-               }
+            if (axios.isCancel(error)){
+                console.log("Scan canceled by user.");
+            } else {
+                console.error("Error Scanning URLs:", error);
+            }
         }
-    };
+    }
+
     const handleCancel= () => {
         if (scanRequest) {
             scanRequest ();

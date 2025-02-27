@@ -36,6 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
 .loading-overlay {
   position: fixed;
   top: 0;
