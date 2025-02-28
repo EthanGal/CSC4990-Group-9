@@ -14,15 +14,16 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #7484C6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #7484C6;
 }
+
 
 .App-link {
   color: #61dafb;
@@ -35,6 +36,10 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.navbar-custom{
+  background-color: #7484C6;
 }
 
 .loading-overlay {
