@@ -28,11 +28,12 @@ const Home = () => {
         }, 250);
 
         try {
+            console.log("Sending scan request with:", urls);
             const response = await axios.post("http://localhost:5000/api/scan",
                 { urls },
-                {cancelToken: source.token});
-            navigate ("/reports", {state: {reports: response.data.reports}});
-
+                {
+                    headers:{"Content-Type": "application/json"},
+                    cancelToken: source.token});
 
             clearInterval(interval);
             setProgress (100);

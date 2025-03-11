@@ -1,10 +1,9 @@
 const express = require('express');
-const {scanWebsite} = require('../controllers/scanController');
+const router = express.Router();
+const {scanAndGrade} = require('../controllers/scanController');
 const {isValidUrl} = require('../utils/validators');
 
-const router = express.Router();
-
-router.post ('/scan', async (req,res) => {
+router.post ('/', async (req,res) => {
     const {urls} = req.body;
     if (!Array.isArray(urls)) {
         return res.status(400).json({error: "Invalid request format: urls is not an Array"}) //todo: clean this up
@@ -14,10 +13,12 @@ router.post ('/scan', async (req,res) => {
     if (validUrls.length ===0){
         return res.status(400).json({error: "No valid URLs provided"})
     }
+
     try {
-        const results = await Promise.all(validUrls.map(url => scanWebsite(url)));
-        res.json({success: true, reports: results});
+        req.validUrls = validUrls;
+        await scanAndGrade(req, res);
     } catch (error){
+        console.error("Error in scanRoutes:", error);
         res.status(500).json ({error: "An error occurred during scanning."});
     }
 

@@ -6,7 +6,7 @@ const Loading = ({progress, onCancel}) => {
         <div className = "loading-overlay">
             <div className='loading-box'>
                 <p>Scanning... {progress}%</p>
-                <div className='progress-bar'>
+                <div className='progress-bar mb-2'>
                     <div className='progress-fill' style={{ width: `${progress}%`}}></div>
                 </div>
                 <button className="btn btn-danger" onClick={onCancel}>Cancel Scan</button>

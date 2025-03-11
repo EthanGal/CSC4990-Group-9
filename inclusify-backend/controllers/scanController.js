@@ -1,44 +1,58 @@
-const puppeteer = require('puppeteer');
+const {scanWebsite} = require("../scanners/websiteScanner");
+const {calculateAccessibilityGrade} = require ("../grading/accessibilityGrader");
 
-const scanWebsite = async (url) => {
-    if (!url || !url.startsWith("http")) {
-        return {url, error: "Invalid URL format"}
+async function scanAndGrade (req, res) {
+    console.log("Incoming request received in scanAndGrade!");
+    console.log("req.body:", req.body);
+    if (!req.validUrls) {
+        return res.status(400).json({ error: "No valid URLs found for scanning." });
     }
-
-    console.log(`FLAG1: Scanning:${url}`);
 
     try {
-        const browser = await puppeteer.launch ({
-            headless: "new",
-            ignoreHTPPSErrors: true,
-            args: [
-                '--disable-blink-features=AutomationControlled',
-                '--no-sandbox',
-                '--disable-setuid-sandbox']
-        });
+        const reports = [];
 
-        const page = await browser.newPage();
+        for (const url of req.validUrls) {
+            console.log(`Scanning: ${url}`);
 
-        await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36")
-        await page.setExtraHTTPHeaders({"Accept-Language": "en-US,en;q=0.9"})
-        await page.goto(url, {timeout: 50000, waitUntil:'domcontentloaded'});
+            let scanResult;
+            try {
+                scanResult = await scanWebsite(url);
+                console.log(`Scan completed: ${url}`);
+            } catch (scanError) {
+                console.error(`Error scanning ${url}:`, scanError);
+                reports.push({ url, error: "Failed to scan website." });
+                continue;
+            }
 
-        await page.waitForSelector('body', {timeout: 20000});
+            if (!scanResult || !scanResult.htmlContent) {
+                console.error(`No HTML content found for ${url}`);
+                reports.push({ url, error: "No HTML content found." });
+                continue;
+            }
 
-        const title = await page.title();
-        const htmlContent = await page.evaluate(() => document.body.innerHTML.substring(0,200));
-        const accessibilityScore = Math.floor(Math.random()*100);
+            // Start the grading process
+            const gradeResult = calculateAccessibilityGrade(scanResult.htmlContent, scanResult.bodyText, scanResult.fontSizes);
 
-        await browser.close();
+            // Console output for debugging
+            console.log(`Scan Complete for: ${scanResult.title}`);
+            console.log(`URL: ${url}`);
+            console.log(`Title: ${scanResult.title}`);
+            console.log(`Accessibility Grade: ${gradeResult.finalScore.toFixed(2)}`);
+            console.log("Breakdown (contrast score defaults to 100):", gradeResult.details);
+            console.log("-----------------------------------");
 
-        console.log(`test title: ${title} + Content: ${htmlContent}`);
-        return {url, title, htmlContent, accessibilityScore};
+            reports.push({
+                url,
+                title: scanResult.title,
+                finalScore: gradeResult.grade,
+                criteriaScores: gradeResult.details
+            });
+        }
 
-
+        res.json({ success: true, reports });
     } catch (error) {
-        console.log(`FLAG2: Error Scanning ${url}:`);
-        return {url, error: error.message};
+        console.error("Scanning error:", error);
+        res.status(500).json({ error: "Failed to process scan request." });
     }
-};
-
-module.exports = {scanWebsite};
+}
+module.exports = {scanAndGrade};
