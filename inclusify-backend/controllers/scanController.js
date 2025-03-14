@@ -18,6 +18,7 @@ async function scanAndGrade (req, res) {
             try {
                 scanResult = await scanWebsite(url);
                 console.log(`Scan completed: ${url}`);
+                console.log(`--------------------------------`);
             } catch (scanError) {
                 console.error(`Error scanning ${url}:`, scanError);
                 reports.push({ url, error: "Failed to scan website." });

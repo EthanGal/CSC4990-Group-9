@@ -1,52 +1,77 @@
 
-function evaluateHTML(html){
-    const errors = [...html.matchAll(/<font>|<marquee</g)].map(match => match.index);
+function evaluateHTML(html) {
+    const deprecatedTags = [...html.matchAll(/<(font|marquee)/g)];
+
+    const errors = deprecatedTags.map(match => ({
+        tag: match[1],
+        line: html.substring(0, match.index).split("\n").length // Estimate line number
+    }));
+
+    if (errors.length > 0) {
+        console.log("Deprecated HTML tags detected:");
+        errors.forEach(error => {
+            console.log(`- <${error.tag}> tag found on Line ${error.line}`);
+        });
+        console.log("-------------------------------------------------");
+    }
+
     return {
         score: errors.length > 0 ? 50 : 100,
-        issues: errors.length > 0 ? {message: "Deprecated tags found", lines: errors} : {}
+        issues: errors.length > 0 ? { message: "Deprecated tags found", lines: errors } : {}
     };
 }
+
 
 function evaluateAltText(html, altTextElements = []) {
     if (altTextElements.length === 0) {
         const altTextMatches = [...html.matchAll(/<img[^>]*?alt="([^"]*)".*?src="([^"]*)"/g)];
 
         altTextElements = altTextMatches
-            .filter(match => !match[1].trim())
+            .filter(match => {
+                const altText = match[1].trim();
+                const src = match[2];
+
+                const isTrackingPixel = /1x1|pixel|beacon|transparent/i.test(src);
+
+                const isAdBeacon = /(adsystem|doubleclick|googlesyndication|analytics|tracking|simpli\.fi|amazon-adsystem)/i.test(src);
+
+                const isServiceImage = /(translate|captcha|recaptcha|gstatic)/i.test(src);
+
+                return !altText && !isTrackingPixel && !isAdBeacon && !isServiceImage;
+            })
             .map(match => ({
-                line: match.index + 1,
+                line: html.substring(0, match.index).split("\n").length, // Estimate line number
                 src: match[2]
             }));
     }
 
-    // Log for debugging
-    console.log("Detected images with missing alt text (src and line numbers):", altTextElements);
+    const totalImages = [...html.matchAll(/<img /g)].length;
+
+    // Debug logs
+    console.log("Filtered detected images with missing alt text:", altTextElements);
+    console.log("Total images detected:", totalImages);
 
     const missingAltText = altTextElements.length;
-
-    // Calculate the percentage of images with missing alt text
-    const missingAltTextPercentage = altTextElements.length > 0 ? (missingAltText / altTextElements.length) * 100 : 0;
-
+    const missingAltTextPercentage = totalImages > 0 ? (missingAltText / totalImages) * 100 : 0;
     const score = Math.round(100 - missingAltTextPercentage);
 
-    // Extract image sources and line numbers of missing alt text
     const linesWithMissingAltText = altTextElements
         .map(entry => `Line ${entry.line} - Image: ${entry.src}`)
         .join(", ");
 
-    // Log for debugging
-    console.log("Missing alt text count:", missingAltText);
+    console.log("Missing alt text count (excluding beacons, ads, auto-generated images):", missingAltText);
     console.log("Missing alt text percentage:", missingAltTextPercentage);
     console.log("Alt text score:", score);
     console.log("Line numbers with missing alt text:", linesWithMissingAltText);
+    console.log("-------------------------------------------------------------");
 
     return {
-        score: Math.max(0, score),  // Ensure score is not negative
+        score: Math.max(0, score),
         issues: missingAltText > 0 ? {
             message: "Missing Alt Text",
             lines: linesWithMissingAltText
         } : {},
-        detectedAltTextElements: altTextElements  // Pass the alt text elements for further inspection if needed
+        detectedAltTextElements: altTextElements
     };
 }
 
@@ -96,6 +121,7 @@ function evaluateFontSize(html, fontSizes = []) {
     console.log("Bad font percentage:", badFontPercentage);
     console.log("Font size score:", score);
     console.log("Line numbers with small fonts:", lineNumbers);
+    console.log("---------------------------------------------------");
 
     const formattedLineNumbers = lineNumbers.map(line => `Line ${line}`).join(", ");
 
@@ -109,13 +135,49 @@ function evaluateFontSize(html, fontSizes = []) {
     };
 }
 
-function evaluateFontReadability(html){
-    const badFonts = [...html.matchAll(/font-family:\s*(Comic Sans|Papyrus|Cursive)/gi)].map (match => match.index);
+function evaluateFontReadability(html, detectedFonts = []) {
+    if (detectedFonts.length === 0) {
+        const fontMatches = [...html.matchAll(/font-family:\s*([^;"]+)/g)];
+
+        // Extract font names
+        detectedFonts = [...new Set(fontMatches.map(match => match[1].trim().split(",")[0]))]; // Take only the first font in the list
+    }
+
+    // Font BlackList
+    const badFonts = new Set([
+        "Comic Sans MS", "Papyrus", "Brush Script MT", "Curlz MT", "Chiller",
+        "Jokerman", "Impact", "Viner Hand", "Kristen ITC", "Vivaldi",
+        "Lucida Handwriting", "Playbill", "Old English Text MT"
+    ]);
+
+    // Identify bad fonts used on the website
+    const unreadableFonts = detectedFonts.filter(font => badFonts.has(font));
+
+    const unreadableFontPercentage = detectedFonts.length > 0
+        ? (unreadableFonts.length / detectedFonts.length) * 100
+        : 0;
+
+    const score = Math.round(100 - unreadableFontPercentage);
+
+    // Log for debugging
+    // Log for debugging
+    console.log("Detected font families:", detectedFonts);
+    console.log("Unreadable font entries:", unreadableFonts);
+    console.log("Unreadable font percentage:", unreadableFontPercentage.toFixed(2) + "%");
+    console.log("Font readability score:", score);
+    console.log("-------------------------------------------------------------");
+
     return {
-        score: badFonts.length > 0 ? 50 : 100,
-        issues: badFonts.length > 0 ? {message: "Unreadable fonts detected", lines: badFonts} : {}
+        score: Math.max(0, score),  // Ensure score does not go below 0
+        detectedFonts,  // Include all detected fonts
+        issues: unreadableFonts.length > 0 ? {
+            message: "Unreadable fonts detected",
+            fonts: unreadableFonts  // List unreadable fonts
+        } : {}
     };
 }
+
+
 function evaluateContrast(html){
     //todo find out how to grade contrast
     return 100; //placeholder score
