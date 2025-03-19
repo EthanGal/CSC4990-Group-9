@@ -1,0 +1,37 @@
+h1{
+    font-family: "Segoe UI Black";
+}
+
+#head{
+    color: red;
+    background-color: turquoise;
+}
+
+#box{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    font-size: 2rem;
+    gap: 10px;
+}
+
+.left{
+    font-family: "Segoe UI Black";
+    color:white;
+    background-color: #9425DA;
+    flex: 33%;
+}
+
+.middle{
+    font-family: "Comic Sans MS";
+    color:white;
+    background-color: #DA25C6;
+    flex: 33%;
+}
+
+.right{
+    font-family: "Papyrus";
+    color:white;
+    background-color: #3925DA;
+    flex: 33%;
+}
