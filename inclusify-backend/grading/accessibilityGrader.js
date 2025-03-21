@@ -6,20 +6,20 @@ const {
     evaluateFontReadability,
     evaluateContrast,
     evaluateTabNavigation
-} = require ('./gradingUtils');
+} = require('./gradingUtils');
 
-function calculateAccessibilityGrade(htmlContent, bodyText, fontSizes){
+function calculateAccessibilityGrade(htmlContent, bodyText, fontSizes, extractedData) {
     const criteriaResults = {
-        html : evaluateHTML(htmlContent),
-        altText : evaluateAltText(htmlContent),
-        aria : evaluateARIA(htmlContent),
-        fontSize : evaluateFontSize(htmlContent, fontSizes),
-        fontReadability : evaluateFontReadability(htmlContent),
-        contrast : evaluateContrast(htmlContent),
-        tabNavigation : evaluateTabNavigation (htmlContent)
+        html: evaluateHTML(htmlContent),
+        altText: evaluateAltText(htmlContent),
+        aria: evaluateARIA(htmlContent),
+        fontSize: evaluateFontSize(htmlContent, fontSizes),
+        fontReadability: evaluateFontReadability(htmlContent),
+        contrast: evaluateContrast(htmlContent, extractedData),
+        tabNavigation: evaluateTabNavigation(htmlContent)
     }
 
-    const weightedScores ={
+    const weightedScores = {
         html: criteriaResults.html.score * 0.05,
         altText: criteriaResults.altText.score * 0.20,
         aria: criteriaResults.aria.score * 0.20,
@@ -29,7 +29,7 @@ function calculateAccessibilityGrade(htmlContent, bodyText, fontSizes){
         tabNavigation: criteriaResults.tabNavigation.score * 0.15
     }
 
-    const finalScore = Object.values(weightedScores).reduce((sum,score) => sum + score, 0);
+    const finalScore = Object.values(weightedScores).reduce((sum, score) => sum + score, 0);
 
     let grade = "F";
     if (finalScore >= 90)
@@ -53,8 +53,14 @@ function calculateAccessibilityGrade(htmlContent, bodyText, fontSizes){
                 detectedFontSizes: criteriaResults.fontSize.detectedFontSizes,
                 issues: criteriaResults.fontSize.issues
             },
-            fontReadability : criteriaResults.fontReadability,
-            contrast: criteriaResults.contrast,
+            fontReadability: criteriaResults.fontReadability,
+            contrast: {
+                score: criteriaResults.contrast.score,
+                issues: {
+                    message: criteriaResults.contrast.issues?.message || "No issues detected",
+                    flaggedUniquePairs: [...(criteriaResults.contrast.issues?.flaggedUniquePairs || [])]
+                }
+            },
             tabNavigation: criteriaResults.tabNavigation
         }
     };

@@ -1,3 +1,4 @@
+const {evaluateColorAccessibility} = require('./colorDetection');
 
 function evaluateHTML(html) {
     const deprecatedTags = [...html.matchAll(/<(font|marquee)/g)];
@@ -17,10 +18,9 @@ function evaluateHTML(html) {
 
     return {
         score: errors.length > 0 ? 50 : 100,
-        issues: errors.length > 0 ? { message: "Deprecated tags found", lines: errors } : {}
+        issues: errors.length > 0 ? {message: "Deprecated tags found", lines: errors} : {}
     };
 }
-
 
 function evaluateAltText(html, altTextElements = []) {
     if (altTextElements.length === 0) {
@@ -59,6 +59,7 @@ function evaluateAltText(html, altTextElements = []) {
         .map(entry => `Line ${entry.line} - Image: ${entry.src}`)
         .join(", ");
 
+    //specific debug logs before report is finalized
     console.log("Missing alt text count (excluding beacons, ads, auto-generated images):", missingAltText);
     console.log("Missing alt text percentage:", missingAltTextPercentage);
     console.log("Alt text score:", score);
@@ -75,15 +76,14 @@ function evaluateAltText(html, altTextElements = []) {
     };
 }
 
-
-function evaluateARIA(html){
+//detects presence of aria labels. does not completely penalize for missing labels
+function evaluateARIA(html) {
     const ariaRoles = [...html.matchAll(/role="/g)].map(match => match.index);
     return {
-        score : ariaRoles.length > 0 ? 100 : 50,
+        score: ariaRoles.length > 0 ? 100 : 50,
         issues: ariaRoles.length === 0 ? {message: "No ARIA roles found", lines: []} : {}
     };
 }
-
 
 function evaluateFontSize(html, fontSizes = []) {
     if (fontSizes.length === 0) {
@@ -115,7 +115,7 @@ function evaluateFontSize(html, fontSizes = []) {
         })
         .filter(index => index !== -1);
 
-    // Log for debugging
+    // Log for debugging before final breakdown
     console.log("Bad font entries:", badFontEntries);
     console.log("Bad font count:", badFontCount);
     console.log("Bad font percentage:", badFontPercentage);
@@ -140,7 +140,8 @@ function evaluateFontReadability(html, detectedFonts = []) {
         const fontMatches = [...html.matchAll(/font-family:\s*([^;"]+)/g)];
 
         // Extract font names
-        detectedFonts = [...new Set(fontMatches.map(match => match[1].trim().split(",")[0]))]; // Take only the first font in the list
+        detectedFonts = [...new Set(fontMatches.map(match => match[1].trim()))];
+
     }
 
     // Font BlackList
@@ -152,14 +153,12 @@ function evaluateFontReadability(html, detectedFonts = []) {
 
     // Identify bad fonts used on the website
     const unreadableFonts = detectedFonts.filter(font => badFonts.has(font));
-
     const unreadableFontPercentage = detectedFonts.length > 0
         ? (unreadableFonts.length / detectedFonts.length) * 100
         : 0;
 
     const score = Math.round(100 - unreadableFontPercentage);
 
-    // Log for debugging
     // Log for debugging
     console.log("Detected font families:", detectedFonts);
     console.log("Unreadable font entries:", unreadableFonts);
@@ -168,26 +167,26 @@ function evaluateFontReadability(html, detectedFonts = []) {
     console.log("-------------------------------------------------------------");
 
     return {
-        score: Math.max(0, score),  // Ensure score does not go below 0
-        detectedFonts,  // Include all detected fonts
+        score: Math.max(0, score),
+        detectedFonts,
         issues: unreadableFonts.length > 0 ? {
             message: "Unreadable fonts detected",
-            fonts: unreadableFonts  // List unreadable fonts
+            fonts: unreadableFonts
         } : {}
     };
 }
 
-
-function evaluateContrast(html){
-    //todo find out how to grade contrast
-    return 100; //placeholder score
-}
+const evaluateContrast = (html, extractedData) => {
+    const result = evaluateColorAccessibility(extractedData);
+    console.log("ColorBlind Evaluation Result:", JSON.stringify(result, null, 2));
+    return result;
+};
 
 function evaluateTabNavigation(html) {
     const tabIndexMatches = [...html.matchAll(/tabindex\s*=\s*["']?[-0-9]+["']?/g)].map(match => match.index);
     return {
         score: tabIndexMatches.length > 0 ? 100 : 50,
-        issues: tabIndexMatches.length === 0 ? { message: "Tab navigation missing", lines: [] } : {}
+        issues: tabIndexMatches.length === 0 ? {message: "Tab navigation missing", lines: []} : {}
     };
 }
 

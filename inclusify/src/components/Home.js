@@ -24,8 +24,11 @@ const Home = () => {
         setScanRequest(() => source.cancel);
 
         const interval = setInterval(()=> {
-            setProgress((prev) => (prev < 90 ? prev + 1 : prev));
-        }, 250);
+            setProgress((prev) => {
+                if (prev < 99) return prev + 1;
+                return 99;
+            });
+        }, 445); //modify for loading bar speed
 
         try {
             console.log("Sending scan request with:", urls);
