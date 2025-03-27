@@ -26,7 +26,16 @@ const scanWebsite = async (url) => {
         //extract page data
         const title = await page.title();
         const htmlContent = await page.evaluate(() => document.body.innerHTML);
-        const bodyText = await page.evaluate(() => document.body.innerText);
+        const detectedFonts = await page.evaluate(() => {
+            const elements = [...document.querySelectorAll('*')];
+            const fontFamilies = elements.map(el => {
+                const font = window.getComputedStyle(el).fontFamily;
+                return font && font !== 'none' ? font : null;
+            }).filter(font => font !== null);
+
+            return [...new Set(fontFamilies)]; // Remove duplicates
+        });
+
 
         const fontSizes = await page.evaluate(() => {
             const elements = [...document.querySelectorAll('*')];
@@ -49,7 +58,7 @@ const scanWebsite = async (url) => {
                 if (el.outerHTML) {
                     const index = htmlSource.findIndex(line => line.includes(el.outerHTML.trim().slice(0, 50)));
                     if (index !== -1) {
-                        lineNumber = index + 1; // Convert index to 1-based line number
+                        lineNumber = index + 1;
                     }
                 }
 
@@ -68,6 +77,7 @@ const scanWebsite = async (url) => {
         });
 
         await browser.close(); //closes browser
+        console.log("Extracted fonts:", detectedFonts);
 
         console.log(`Scanned title: ${title}`);
 
@@ -76,7 +86,7 @@ const scanWebsite = async (url) => {
             url,
             title,
             htmlContent,
-            bodyText,
+            detectedFonts,
             fontSizes,
             extractedData // Keeps colors and elements together as an array of objects
         };
