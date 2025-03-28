@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => (
-    <nav className="navbar navbar-light bg-light mb-3">
+    <nav style={{ backgroundColor: "#7484C6", padding: "10px" }} className="navbar mb-3">
         <div className="container-fluid d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center">
                 <span className="text-primary mb-0 h2">Inclusify</span>
