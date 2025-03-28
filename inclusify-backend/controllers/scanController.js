@@ -34,7 +34,7 @@ async function scanAndGrade(req, res) {
             // Start the grading process
             const gradeResult = calculateAccessibilityGrade(
                 scanResult.htmlContent,
-                scanResult.bodyText,
+                scanResult.detectedFonts,
                 scanResult.fontSizes,
                 scanResult.extractedData
             );
@@ -50,7 +50,8 @@ async function scanAndGrade(req, res) {
             reports.push({
                 url,
                 title: scanResult.title,
-                finalScore: gradeResult.grade,
+                finalScore: gradeResult.finalScore.toFixed(2),
+                grade: gradeResult.grade,
                 criteriaScores: gradeResult.details
             });
         }

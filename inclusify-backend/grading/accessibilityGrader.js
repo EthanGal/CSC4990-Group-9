@@ -8,25 +8,25 @@ const {
     evaluateTabNavigation
 } = require('./gradingUtils');
 
-function calculateAccessibilityGrade(htmlContent, bodyText, fontSizes, extractedData) {
+function calculateAccessibilityGrade(htmlContent, detectedFonts, fontSizes, extractedData) {
     const criteriaResults = {
         html: evaluateHTML(htmlContent),
         altText: evaluateAltText(htmlContent),
         aria: evaluateARIA(htmlContent),
         fontSize: evaluateFontSize(htmlContent, fontSizes),
-        fontReadability: evaluateFontReadability(htmlContent),
+        fontReadability: evaluateFontReadability(htmlContent, detectedFonts),
         contrast: evaluateContrast(htmlContent, extractedData),
         tabNavigation: evaluateTabNavigation(htmlContent)
     }
 
     const weightedScores = {
         html: criteriaResults.html.score * 0.05,
-        altText: criteriaResults.altText.score * 0.20,
+        altText: criteriaResults.altText.score * 0.15,
         aria: criteriaResults.aria.score * 0.20,
-        fontSize: criteriaResults.fontSize.score * 0.10,
-        fontReadability: criteriaResults.fontReadability.score * 0.10,
+        fontSize: criteriaResults.fontSize.score * 0.15,
+        fontReadability: criteriaResults.fontReadability.score * 0.15,
         contrast: criteriaResults.contrast.score * 0.20,
-        tabNavigation: criteriaResults.tabNavigation.score * 0.15
+        tabNavigation: criteriaResults.tabNavigation.score * 0.10
     }
 
     const finalScore = Object.values(weightedScores).reduce((sum, score) => sum + score, 0);
