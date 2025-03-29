@@ -5,7 +5,7 @@ const Navbar = () => (
     <nav style={{ backgroundColor: "#7484C6", padding: "10px" }} className="navbar mb-3">
         <div className="container-fluid d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center">
-                <span className="text-primary mb-0 h2">Inclusify</span>
+                <span style={{color: "#2437A7"}} className="text-primary mb-0 h2">Inclusify</span>
             </div>
 
             <div className="d-flex me-4">
