@@ -68,7 +68,7 @@ const Home = () => {
     return (
             <div className="container" id="homeContain">
                 <h1 id="inclusify" className=" text-primary"> Inclusify</h1>
-                <p> <h2>Enter up to 3 website URLs to scan:</h2>  </p>
+                <p> <h2>Paste up to 3 website URLs to scan:</h2>  </p>
 
                 {urls.map((url, index) => (
                     <input
