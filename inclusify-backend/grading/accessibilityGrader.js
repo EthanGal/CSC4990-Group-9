@@ -8,12 +8,13 @@ const {
     evaluateTabNavigation
 } = require('./gradingUtils');
 
-function calculateAccessibilityGrade(htmlContent, detectedFonts, fontSizes, extractedData) {
+function calculateAccessibilityGrade(htmlContent, detectedFonts, fontSizes, extractedData, fontSizesWithLineNumbers,) {
+    console.log("fontSizesWithLineNumbers being passed:", fontSizesWithLineNumbers);
     const criteriaResults = {
         html: evaluateHTML(htmlContent),
         altText: evaluateAltText(htmlContent),
         aria: evaluateARIA(htmlContent),
-        fontSize: evaluateFontSize(htmlContent, fontSizes),
+        fontSize: evaluateFontSize(htmlContent, fontSizes, fontSizesWithLineNumbers),
         fontReadability: evaluateFontReadability(htmlContent, detectedFonts),
         contrast: evaluateContrast(htmlContent, extractedData),
         tabNavigation: evaluateTabNavigation(htmlContent)

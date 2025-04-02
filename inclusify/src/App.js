@@ -4,19 +4,24 @@ import './App.css';
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Reports from "./components/Reports";
+import Login from "./components/Login";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
-  return (
-    <Router>
-      <Navbar />
-      <div className="container mt-4">
-        <Routes>
-            <Route path="/" element={<Home/>} /> {/*Homepage*/}
-            <Route path="/reports" element={<Reports/>} />
-        </Routes>
-      </div>
-    </Router>
-  );
+    return (
+        <AuthProvider>
+            <Router>
+                <Navbar />
+                <div className="container mt-4">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/reports" element={<Reports />} />
+                        <Route path="/login" element={<Login />} />
+                    </Routes>
+                </div>
+            </Router>
+        </AuthProvider>
+    );
 }
 
 export default App;

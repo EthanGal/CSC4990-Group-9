@@ -132,58 +132,71 @@ function evaluateARIA(html) {
     };
 }
 
-function evaluateFontSize(html, fontSizes = []) {
-    if (fontSizes.length === 0) {
-        const fontSizeMatches = [...html.matchAll(/font-size:\s*(\d+(\.\d+)?)px/g)];
+function evaluateFontSize(html, fontSizes = [], fontSizesWithLineNumbers = []) {
+    // Use fontSizesWithLineNumbers if it's not empty
+    if (fontSizesWithLineNumbers.length > 0) {
+        console.log("Using font sizes with line numbers:", fontSizesWithLineNumbers);
+    } else {
+        console.log("No font sizes with line numbers provided. Falling back to plain font sizes.");
 
+        const fontSizeMatches = [...html.matchAll(/font-size:\s*(\d+(\.\d+)?)px/g)];
         fontSizes = fontSizeMatches
             .map(match => match[0].split(':')[1].trim())
             .filter(size => parseFloat(size) !== 0);
     }
 
-    // Log for debugging
-    console.log("Detected font sizes (filtered):", fontSizes);
+    // Remove duplicates from font sizes and line numbers
+    const uniqueFontSizes = [...new Set(fontSizesWithLineNumbers.map(entry => entry.fontSize))];
+    const uniqueLineNumbers = Array.from(
+        new Set(fontSizesWithLineNumbers.map(entry => entry.lineNumber))
+    );
 
-    const badFontEntries = fontSizes.filter(size => {
-        const numericSize = parseFloat(size);
-        return numericSize < 12 && numericSize !== 0;
+    console.log("Unique Font Sizes:", uniqueFontSizes);
+    console.log("Unique Line Numbers:", uniqueLineNumbers);
+
+    // Identify problematic font sizes (e.g., < 12px)
+    const badFontSizes = uniqueFontSizes.filter(fontSize => {
+        return parseFloat(fontSize) < 12 && fontSize !== '0';  // Fonts smaller than 12px
     });
 
-    const badFontCount = badFontEntries.length;
+    // Calculate the number of bad font sizes (distinct font sizes only)
+    const badFontCount = badFontSizes.length;
 
-    const badFontPercentage = fontSizes.length > 0 ? (badFontCount / fontSizes.length) * 100 : 0;
+    // Recalculate the error percentage after removing duplicates
+    const errorPercentage = uniqueFontSizes.length > 0
+        ? (badFontCount / uniqueFontSizes.length) * 100
+        : 0;
 
-    const score = Math.round(100 - badFontPercentage);
+    // Score is based on the error percentage
+    const score = Math.round(100 - errorPercentage);
 
-    const lineNumbers = fontSizes
-        .map((size, index) => {
-            const numericSize = parseFloat(size);
-            return numericSize < 12 && numericSize !== 0 ? index : -1;
-        })
-        .filter(index => index !== -1);
+    // Collect the line numbers of problematic fonts
+    const badFontEntries = fontSizesWithLineNumbers.filter(entry => badFontSizes.includes(entry.fontSize));
+    const lineNumbers = badFontEntries.map(entry => entry.lineNumber);
 
-    // Log for debugging before final breakdown
-    console.log("Bad font entries:", badFontEntries);
+    console.log("Bad font sizes:", badFontSizes);
     console.log("Bad font count:", badFontCount);
-    console.log("Bad font percentage:", badFontPercentage);
+    console.log("Error percentage:", errorPercentage);
     console.log("Font size score:", score);
     console.log("Line numbers with small fonts:", lineNumbers);
     console.log("---------------------------------------------------");
 
-    const formattedLineNumbers = lineNumbers.map(line => `Line ${line}`).join(", ");
+    const formattedLineNumbers = lineNumbers.join(", ");
 
     return {
         score: Math.max(0, score),
-        issues: badFontEntries.length > 0 ? {
+        issues: badFontSizes.length > 0 ? {
             message: "Small fonts detected",
+            problematicFontSizes: badFontSizes.join(", "),    // Only problematic font sizes here
             lines: formattedLineNumbers,
             totalBadSizes: badFontCount,
-            totalDetectedSizes: fontSizes.length,
-            percentage: badFontPercentage,
-            detectedFontSizes: badFontEntries,
-        } : null, // If no bad fonts, return null for issues
+            totalDetectedSizes: uniqueFontSizes.length,  // Total number of different font sizes
+            percentage: errorPercentage,  // Show error percentage
+        } : null,
     };
 }
+
+
 
 function evaluateFontReadability(html, detectedFonts) {
     if (detectedFonts.length === 0) {

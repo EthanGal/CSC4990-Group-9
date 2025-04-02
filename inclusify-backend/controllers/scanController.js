@@ -36,7 +36,8 @@ async function scanAndGrade(req, res) {
                 scanResult.htmlContent,
                 scanResult.detectedFonts,
                 scanResult.fontSizes,
-                scanResult.extractedData
+                scanResult.extractedData,
+                scanResult.fontSizesWithLineNumbers
             );
 
             // Console output for debugging

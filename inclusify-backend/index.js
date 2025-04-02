@@ -1,8 +1,9 @@
-require ('dotenv').config();
+require('dotenv').config();
 const express = require('express');
-const cors = require('cors')
-const scanRoutes = require ('./routes/scanRoutes');
-const db = require ('./config/db');
+const cors = require('cors');
+const authRoutes = require('./routes/authRoutes');  // Import the authentication routes
+const scanRoutes = require('./routes/scanRoutes');
+const db = require('./config/db');
 
 const app = express();
 
@@ -11,15 +12,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-   console.log("Middleware check - Body Parser Applied");
    next();
 });
 
-app.use('/api/scan', scanRoutes);
+// Routes
+app.use('/auth', authRoutes);  // Authentication routes (e.g., /auth/register, /auth/login)
+app.use('/api/scan', scanRoutes);  // Scanning routes
 
-app.get ('/', (req,res) =>{
-   res.send('Backend is running!')
+// Test route to confirm server is running
+app.get('/', (req, res) => {
+   res.send('Backend is running!');
 });
 
-const PORT = process.env.PORT || 5000;
+// Server setup
+const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

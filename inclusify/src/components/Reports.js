@@ -154,8 +154,8 @@ const Reports = () => {
                                                             {value.issues?.penalty && (
                                                                 <p><strong>Penalty:</strong> {value.issues.penalty} Point(s)</p>
                                                             )}
-                                                            {value.issues?.detectedFontSizes && (
-                                                                <p><strong>Problematic Font Sizes:</strong> {value.issues.detectedFontSizes.join(", ")}</p>
+                                                            {value.issues?.problematicFontSizes && (
+                                                                <p><strong>Problematic Font Sizes:</strong> {value.issues.problematicFontSizes}</p>
                                                             )}
                                                             {value.issues?.badFonts && (
                                                                 <p><strong>Problematic Font Types:</strong> {value.issues.badFonts.join(", ")}</p>
@@ -231,7 +231,6 @@ const Reports = () => {
                         ))}
                     </div>
                 </div>
-            );
         </div>
     );
 };

@@ -36,6 +36,31 @@ const scanWebsite = async (url) => {
             return [...new Set(fontFamilies)]; // Remove duplicates
         });
 
+        const fontSizesWithLineNumbers = await page.evaluate(() => {
+            const elements = [...document.querySelectorAll('*')];
+
+            // Function to extract the line number from HTML source
+            const getLineNumberFromHTML = (element) => {
+                const htmlString = document.documentElement.outerHTML;
+                const elementHTML = element.outerHTML;
+
+                // Find the index of the element's HTML in the document string
+                const index = htmlString.indexOf(elementHTML);
+
+                // Calculate the line number based on index (adjust for your case)
+                const lines = htmlString.slice(0, index).split('\n');
+                return lines.length;
+            };
+
+            // Get font sizes with actual line numbers
+            return elements.map(el => {
+                const fontSize = window.getComputedStyle(el).fontSize;
+                const lineNumber = getLineNumberFromHTML(el); // Get exact line number in HTML
+                return { fontSize, lineNumber };
+            });
+        });
+
+        console.log(fontSizesWithLineNumbers);
 
         const fontSizes = await page.evaluate(() => {
             const elements = [...document.querySelectorAll('*')];
@@ -88,6 +113,7 @@ const scanWebsite = async (url) => {
             htmlContent,
             detectedFonts,
             fontSizes,
+            fontSizesWithLineNumbers,
             extractedData // Keeps colors and elements together as an array of objects
         };
 
