@@ -107,3 +107,34 @@ input {
   width: 0;
   transition: width 0.5s ease-in-out;
 }
+
+#homeContain{
+  border-radius: 25px;
+  background: #1F3F53;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 1000px;
+  height: 500px;
+  display: flex;
+  gap: 30px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#submitSite{
+  width: 500px;
+}
+
+#inclusify{
+  font-size: 50px;
+}
+
+input {
+  width: 80%;
+  max-width: 1000px;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
