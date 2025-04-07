@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import React, {useContext} from "react";
+import {Link} from "react-router-dom";
+import {AuthContext} from "../context/AuthContext";
 
 const Navbar = () => {
-    const { isLoggedIn, logout } = useContext(AuthContext);
+    const {isLoggedIn, logout} = useContext(AuthContext);
 
     return (
         <nav className="navbar navbar-light bg-light mb-3">
@@ -15,7 +15,7 @@ const Navbar = () => {
                 <div className="d-flex me-4">
                     <Link className="nav-link me-2" to="/">Home</Link>
                     <Link className="nav-link me-2" to="/reports">Reports</Link>
-
+                    <Link className="nav-link me-2" to="/reviews">Reviews</Link>
                     {isLoggedIn && (
                         <Link className="nav-link me-2" to="/scannedsites">Scanned Sites</Link>
                     )}
