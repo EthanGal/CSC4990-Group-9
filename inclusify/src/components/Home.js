@@ -69,13 +69,13 @@ const Home = () => {
     };
 
     return (
-        <div className="container">
-            <h2 className="text-primary">Inclusify</h2>
+        <div className="container" id="homeContain">
+            <h1 id="inclusify" className=" text-primary"> Inclusify</h1>
 
             {/* Display the username if logged in */}
             {isLoggedIn && <p>Current user: {username}</p>} {/* Display username here */}
 
-            <p>Enter up to 3 website URLs to scan:</p>
+            <p><h2>Enter up to 3 website URLs to scan:</h2></p>
 
             {urls.map((url, index) => (
                 <input
@@ -88,7 +88,7 @@ const Home = () => {
                 />
             ))}
 
-            <button className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
+            <button id="submitSite"  className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
                 {loading ? "Scanning..." : "Scan Websites"}
             </button>
 
