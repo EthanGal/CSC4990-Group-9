@@ -75,7 +75,7 @@ const Home = () => {
             {/* Display the username if logged in */}
             {isLoggedIn && <p>Current user: {username}</p>} {/* Display username here */}
 
-            <p><h2>Enter up to 3 website URLs to scan:</h2></p>
+            <p><h2 id="enter">Enter up to 3 website URLs to scan:</h2></p>
 
             {urls.map((url, index) => (
                 <input
