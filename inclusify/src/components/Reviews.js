@@ -123,7 +123,7 @@ const ReviewPage = () => {
                 <>
                     {reviews.map((review) => (
                         <div key={review.webID} className="scan-item">
-                            <table className="table table-bordered mt-4 mb-2">
+                            <table id="reviews" className="table table-bordered mt-4 mb-2">
                                 <thead className="sticky-header">
                                 <tr>
                                     <th>URL</th>
@@ -146,7 +146,8 @@ const ReviewPage = () => {
                                 </tbody>
                             </table>
 
-                            <div className="comment-section mt-2 p-4 bg-white rounded shadow-sm">
+                            <div id="comments" className="comment-section mt-2 p-4 bg-white rounded shadow-sm border
+                            border-dark border-3">
                                 <h4>Comments</h4>
                                 {review.comments && review.comments.length > 0 ? (
                                     review.comments.map((comment, idx) => (

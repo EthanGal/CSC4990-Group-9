@@ -48,6 +48,19 @@
     align-items: center;
 }
 
+#grades{
+    border-radius: 25px !important;
+    border-color: black;
+    border-width: 3px;
+}
+
+#reviews{
+    border-radius: 25px;
+    border-color: black;
+    border: 3px solid;
+}
+
+
 #enter{
     /*-webkit-text-stroke: 0.4px white;*/
 }
