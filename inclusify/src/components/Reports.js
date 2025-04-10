@@ -228,7 +228,7 @@ const Reports = () => {
                 </p>
 
             )}
-                <div className="card mt-4">
+                <div id="grades" className="card mt-4">
                     <div className="card-body">
                         <h5>How We Grade Accessibility</h5>
                         {Object.entries(gradingDescriptions).map(([key, description]) => (
