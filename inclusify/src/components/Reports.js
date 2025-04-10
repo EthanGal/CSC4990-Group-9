@@ -219,7 +219,14 @@ const Reports = () => {
                     </tbody>
                 </table>
             ) : (
-                <p>No Reports Available</p>
+                <p>
+                    No reports found. To make a report, begin a scan{' '}
+                    <a href="/" style={{ color: '#007bff', textDecoration: 'underline' }}>
+                        here
+                    </a>
+                    .
+                </p>
+
             )}
                 <div className="card mt-4">
                     <div className="card-body">

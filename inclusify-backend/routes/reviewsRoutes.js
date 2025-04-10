@@ -15,7 +15,7 @@ router.get('/scans', async (req, res) => {
             w.webURL, 
             u.username, 
             a.totalScore, 
-            a.LatestGrade,  -- This column is being selected
+            a.LatestGrade, 
             a.Date,
             (SELECT revBody FROM userReviews WHERE userReviews.webID = w.webID ORDER BY revDate DESC LIMIT 1) AS latestComment,
             (SELECT COUNT(*) FROM userReviews WHERE userReviews.webID = w.webID) AS commentCount

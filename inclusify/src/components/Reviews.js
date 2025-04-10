@@ -9,7 +9,7 @@ const ReviewPage = () => {
     const [expandedComments, setExpandedComments] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const [totalReviews, setTotalReviews] = useState(0);
-    const REVIEWS_PER_PAGE = 4; // Adjusted to 4 per page for better pagination
+    const REVIEWS_PER_PAGE = 4;
 
     useEffect(() => {
         axios.get(`http://localhost:5000/reviews/scans?page=${currentPage}&limit=${REVIEWS_PER_PAGE}`)

@@ -17,7 +17,7 @@ const Navbar = () => {
                     <Link className="nav-link me-2" to="/reports">Reports</Link>
                     <Link className="nav-link me-2" to="/reviews">Reviews</Link>
                     {isLoggedIn && (
-                        <Link className="nav-link me-2" to="/scannedsites">Scanned Sites</Link>
+                        <Link className="nav-link me-2" to="/scannedsites">Your Scanned Sites</Link>
                     )}
 
                     {isLoggedIn ? (
