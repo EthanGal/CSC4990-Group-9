@@ -60,6 +60,10 @@
     border: 3px solid;
 }
 
+#reportContainer{
+    border-color: black;
+    border: 3px solid;
+}
 
 #enter{
     /*-webkit-text-stroke: 0.4px white;*/
