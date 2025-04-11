@@ -8,7 +8,7 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: 3306,
-    connectTimeout: 10000 // Increase timeout in case of delays
+    connectTimeout: 11000
 });
 
 // Test the connection
@@ -16,10 +16,10 @@ const pool = mysql.createPool({
     try {
         const connection = await pool.getConnection();
         console.log("Connected to the database.");
-        connection.release(); // Release the connection back to the pool
+        connection.release();
     } catch (err) {
         console.error("Database connection failed:", err);
     }
 })();
 
-module.exports = pool;  // Export the pool to use in other modules
+module.exports = pool;

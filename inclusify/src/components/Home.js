@@ -72,10 +72,9 @@ const Home = () => {
         <div className="container" id="homeContain">
             <h1 id="inclusify" className=" text-primary"> Inclusify</h1>
 
-            {/* Display the username if logged in */}
-            {isLoggedIn && <p>Current user: {username}</p>} {/* Display username here */}
+            {isLoggedIn && <h5>Current user: {username}</h5>}
 
-            <p><h2 id="enter">Enter up to 3 website URLs to scan:</h2></p>
+            <div><h2>Enter up to 3 website URLs to scan:</h2></div>
 
             {urls.map((url, index) => (
                 <input

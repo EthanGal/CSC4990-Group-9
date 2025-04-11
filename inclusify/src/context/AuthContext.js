@@ -16,8 +16,8 @@ export const AuthProvider = ({children}) => {
         setUsername(storedUsername || "");
         setUserID(storedUserID || "");
         console.log("user id from authcontext:" + userID);
+    }, [userID]);
 
-    }, []);
 
     const login = (username, token, userID) => {
         localStorage.setItem("token", token);

@@ -4,6 +4,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const scanRoutes = require('./routes/scanRoutes');
 const db = require('./config/db');
+const userScanRoutes = require('./routes/userScanRoutes');
 const reviewRoutes = require('./routes/reviewsRoutes');
 const app = express();
 
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 app.use('/api/scan', scanRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/auth', authRoutes);
+app.use('/scannedsites', userScanRoutes);
 
 
 app.get('/', (req, res) => {

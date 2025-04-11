@@ -254,7 +254,7 @@ function evaluateTabNavigation(html) {
     const tabIndexMatches = [...html.matchAll(/tabindex\s*=\s*["']?[-0-9]+["']?/g)].map(match => match.index);
     return {
         score: tabIndexMatches.length > 0 ? 100 : 50,
-        issues: tabIndexMatches.length === 0 ? {message: "Tab navigation missing", lines: []} : {}
+        issues: tabIndexMatches.length === 0 ? {message: "Tab navigation missing"} : {}
     };
 }
 
