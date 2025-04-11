@@ -117,7 +117,7 @@ const ReviewPage = () => {
         <div>
             <h2>Community Reviews</h2>
 
-            {!isLoggedIn && <p style={{color: 'red', fontWeight: 'bold'}}>You must be logged in to comment.</p>}
+            {!isLoggedIn && <p>You must be logged in to comment.</p>}
 
             {reviews.length > 0 ? (
                 <>

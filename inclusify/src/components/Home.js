@@ -84,7 +84,7 @@ const Home = () => {
                     value={url}
                     onChange={(e) => handleChange(index, e.target.value)}
                     placeholder={`Website URL ${index + 1}`}
-                    style={{ display: "block", marginBottom: "10px" }} // TODO: Change this to CSS
+                    style={{ display: "block", marginBottom: "10px"}} // TODO: Change this to CSS
                 />
             ))}
 
