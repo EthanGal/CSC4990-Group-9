@@ -33,6 +33,15 @@
     color: #61dafb;
 }
 
+#scanResultHead {
+padding-left: 500px;
+}
+
+.progress-bar{
+    border-color: black;
+    border: 3px solid;
+}
+
 #homeContain {
     background-color: #6d7591;
     border: 3px solid;
@@ -131,5 +140,13 @@ input {
     background: #007bff;
     width: 0;
     transition: width 0.5s ease-in-out;
+}
+
+#login{
+    gap: 30px!important;
+    margin: 10px!important;
+    align-items: center;
+    border: 3px solid;
+    border-radius: 25px;
 }
 
