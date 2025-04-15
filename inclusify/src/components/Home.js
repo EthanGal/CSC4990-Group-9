@@ -70,11 +70,12 @@ const Home = () => {
 
     return (
         <div className="container" id="homeContain">
-            <h1 id="inclusify" className=" text-primary"> Inclusify</h1>
+            <img src="/inclusify-grey-high-resolution-logo.png" width="275" id="logo" className="mt-1 "
+                 alt="HomeLogo"/>
 
             {isLoggedIn && <h5>Current user: {username}</h5>}
 
-            <div><h2>Enter up to 3 website URLs to scan:</h2></div>
+            <div><h2>Copy and Paste up to 3 website URLs to scan:</h2></div>
 
             {urls.map((url, index) => (
                 <input
@@ -83,15 +84,15 @@ const Home = () => {
                     value={url}
                     onChange={(e) => handleChange(index, e.target.value)}
                     placeholder={`Website URL ${index + 1}`}
-                    style={{ display: "block", marginBottom: "10px" }} // TODO: Change this to CSS
+                    style={{display: "block", marginBottom: "10px"}} // TODO: Change this to CSS
                 />
             ))}
 
-            <button id="submitSite"  className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
+            <button id="submitSite" className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
                 {loading ? "Scanning..." : "Scan Websites"}
             </button>
 
-            {loading && <Loading progress={progress} onCancel={handleCancel} />}
+            {loading && <Loading progress={progress} onCancel={handleCancel}/>}
         </div>
     );
 };

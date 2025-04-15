@@ -9,10 +9,10 @@ const Navbar = () => {
         <nav className="navbar navbar-light bg-light mb-3">
             <div className="container-fluid d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center">
-                    <span className="text-primary mb-0 h2">Inclusify</span>
+                    <img src="/inclusify-grey-high-resolution-logo2.png" width="250"id="logo" className="mt-1 ms-4 me-1" alt="NavbarLogo"/>
                 </div>
 
-                <div className="d-flex me-4">
+                <div className="d-flex me-4" id="navbarLinks">
                     <Link className="nav-link me-2" to="/">Home</Link>
                     <Link className="nav-link me-2" to="/reports">Reports</Link>
                     <Link className="nav-link me-2" to="/reviews">Reviews</Link>

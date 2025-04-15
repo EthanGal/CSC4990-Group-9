@@ -33,6 +33,10 @@
     color: #61dafb;
 }
 
+#navbarLinks{
+    font-size: 18px;
+}
+
 #homeContain {
     background-color: #6d7591;
     border-radius: 25px;
