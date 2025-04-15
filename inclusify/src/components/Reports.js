@@ -44,10 +44,10 @@ const Reports = () => {
     };
 
     return (
-        <div className="container">
-            <h2>Scan Results</h2>
+        <div id="login" className="container">
+            <h2 id="scanResultHead">Scan Results</h2>
             {reports.length > 0 ? (
-                <table className="table table-bordered">
+                <table id="reportContainer" className="table table-bordered border-dark">
                     <thead>
                     <tr>
                         <th>#</th>

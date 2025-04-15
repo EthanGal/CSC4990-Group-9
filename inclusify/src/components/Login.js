@@ -70,10 +70,10 @@ const Login = () => {
     };
 
     return (
-        <div className="container login-container">
+        <div id="login" className="container login-container">
             <div className="row">
                 {/* Registration Section */}
-                <div className="col-md-6 left-section">
+                <div id="left" className="col-md-6 left-section">
                     <h2>Register</h2>
                     {registerError && <p className="error-message" style={{color: 'red'}}>{registerError}</p>}
                     <form onSubmit={handleRegister}>
@@ -103,7 +103,7 @@ const Login = () => {
                 </div>
 
                 {/* Login Section */}
-                <div className="col-md-6 right-section">
+                <div id="right" className="col-md-6 right-section">
                     <h2>Login</h2>
                     <form onSubmit={handleLogin}>
                         <div className="form-group">
