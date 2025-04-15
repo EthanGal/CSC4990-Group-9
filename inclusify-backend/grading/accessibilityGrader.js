@@ -1,3 +1,4 @@
+
 const {
     evaluateHTML,
     evaluateAltText,
@@ -8,7 +9,7 @@ const {
     evaluateTabNavigation
 } = require('./gradingUtils');
 
-function calculateAccessibilityGrade(htmlContent, detectedFonts, fontSizes, extractedData, fontSizesWithLineNumbers,) {
+async function calculateAccessibilityGrade(htmlContent, detectedFonts, fontSizes, extractedData, fontSizesWithLineNumbers,) {
     console.log("fontSizesWithLineNumbers being passed:", fontSizesWithLineNumbers);
     const criteriaResults = {
         html: evaluateHTML(htmlContent),
@@ -41,6 +42,7 @@ function calculateAccessibilityGrade(htmlContent, detectedFonts, fontSizes, extr
         grade = "C";
     else if (finalScore >= 60)
         grade = "D";
+
 
     return {
         finalScore: Math.round(finalScore),

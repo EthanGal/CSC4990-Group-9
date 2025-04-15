@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="WS-243.22562.222">
+    <data-source name="@Inclusify" uuid="1dcac0db-95b4-4601-bafc-90787c2d35b7">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>dbMasterLog</user-name>
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>
