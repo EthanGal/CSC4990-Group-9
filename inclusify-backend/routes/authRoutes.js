@@ -2,7 +2,9 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../config/db");
+const {getUserID} = require("../scanners/websiteScanner");
 require("dotenv").config();
+
 
 const router = express.Router();
 
@@ -66,6 +68,8 @@ router.post("/login", async (req, res) => {
             userID: user.userID,
             username: user.userName
         });
+
+        getUserID(user.userID);
 
     } catch (err) {
         console.error("Login error:", err.message);

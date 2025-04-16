@@ -40,33 +40,19 @@ async function sendFinalScoreToDB(url, score, grade, gradeDetails) {
             if (rows.length > 0) {
                 const id = rows[0].RatingID;
                 console.log('Recording Feature Scores for Rating:', id);
+
                 await connection.execute(
-                    'INSERT INTO featEval (FeatName, FeatScore, RatingID) VALUES (?, ?, ?)',
-                    ['html', gradeDetails.html.score, id]
-                );
-                await connection.execute(
-                    ' INSERT INTO featEval (FeatName, FeatScore, RatingID) VALUES (?, ?, ?)',
-                    ['Font Styles', gradeDetails.fontReadability.score, id]
-                );
-                await connection.execute(
-                    ' INSERT INTO featEval (FeatName, FeatScore, RatingID) VALUES (?, ?, ?)',
-                    ['Font Size', gradeDetails.fontSize.score, id]
-                );
-                await connection.execute(
-                    ' INSERT INTO featEval (FeatName, FeatScore, RatingID) VALUES (?, ?, ?)',
-                    ['Aria Compliance', gradeDetails.aria.score, id]
-                );
-                await connection.execute(
-                    ' INSERT INTO featEval (FeatName, FeatScore, RatingID) VALUES (?, ?, ?)',
-                    ['Alt Text', gradeDetails.altText.score, id]
-                );
-                await connection.execute(
-                    ' INSERT INTO featEval (FeatName, FeatScore, RatingID) VALUES (?, ?, ?)',
-                    ['Contrast', gradeDetails.contrast.score, id]
-                );
-                await connection.execute(
-                    ' INSERT INTO featEval (FeatName, FeatScore, RatingID) VALUES (?, ?, ?)',
-                    ['Tab Navigation', gradeDetails.tabNavigation.score, id]
+                    `INSERT INTO featEval (FeatName, FeatScore, RatingID) VALUES 
+                    (?, ?, ?), (?, ?, ?), (?, ?, ?), (?, ?, ?), (?, ?, ?), (?, ?, ?), (?, ?, ?)`,
+                    [
+                        'html', gradeDetails.html.score, id,
+                        'Font Styles', gradeDetails.fontReadability.score, id,
+                        'Font Size', gradeDetails.fontSize.score, id,
+                        'Aria Compliance', gradeDetails.aria.score, id,
+                        'Alt Text', gradeDetails.altText.score, id,
+                        'Contrast', gradeDetails.contrast.score, id,
+                        'Tab Navigation', gradeDetails.tabNavigation.score, id
+                    ]
                 );
             }
             console.log('Feature Scores Recorded Successfully!')
