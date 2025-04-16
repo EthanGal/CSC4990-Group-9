@@ -31,7 +31,7 @@ const separateColorsAndElements = (extractedData) => {
 };
 
 //in order to better compare color pairs, strings with multiple rgb values must be broken apart here (while maintaining association with elements)
-const splitColorStrings = (colors, elements) => {
+const splitColorStrings = (colors, elements, lineNumbers) => {
     if (!Array.isArray(colors) || !Array.isArray(elements) || colors.length !== elements.length) {
         console.error("Invalid input: Expected arrays of equal length but received:", colors, elements);
         return [];
@@ -45,14 +45,19 @@ const splitColorStrings = (colors, elements) => {
 
         if (matches) {
             matches.forEach(match => {
-                let cleanedColor = match.replace(/\s+/g, ''); // Remove spaces for consistency
-                cleanedColorData.push({ color: cleanedColor, element: elements[index] });
+                let cleanedColor = match.replace(/\s+/g, ''); // Remove spaces
+                cleanedColorData.push({
+                    color: cleanedColor,
+                    element: elements[index],
+                    lineNumber: lineNumbers[index] || "Unknown"
+                });
             });
         }
     });
 
     return cleanedColorData;
 };
+
 
 //color comparing function (only analyzes R,G, and B)
 const getRGBValues = (color) => {
@@ -156,14 +161,13 @@ const removeDuplicateFlaggedPairs = (flaggedPairs) => {
     let uniquePairs = [];
 
     for (let pair of flaggedPairs) {
-        // key used to compare pairs to find duplicates
-        let key = JSON.stringify({
-            color1: pair.color1,
-            element1: pair.element1,
-            color2: pair.color2,
-            element2: pair.element2,
-            reason: pair.reason
-        });
+        // Normalize color+element ordering
+        let pairKeyParts = [
+            `${pair.color1}-${pair.element1}-${pair.lineNumber1}`,
+            `${pair.color2}-${pair.element2}-${pair.lineNumber2}`
+        ].sort(); // Ensures same pair regardless of order
+
+        let key = pairKeyParts.join("|") + `|${pair.reason}`;
 
         if (!seen.has(key)) {
             seen.add(key);
@@ -174,17 +178,13 @@ const removeDuplicateFlaggedPairs = (flaggedPairs) => {
     return uniquePairs;
 };
 
+
 //main controller for this file, calls the rest of the functions in this file
 const evaluateColorAccessibility = (extractedData) => {
     console.log("Evaluating color accessibility...");
     const { colors, elements, lineNumbers } = separateColorsAndElements(extractedData);
 
-    const cleanedColorData = splitColorStrings(colors, elements);
-
-    //associates respective line numbers to each color/element after color strings are seperated
-    cleanedColorData.forEach((item, index) => {
-        item.lineNumber = lineNumbers[index] || "Unknown";
-    });
+    const cleanedColorData = splitColorStrings(colors, elements, lineNumbers);
 
     const flaggedCombinations = detectProblematicCombinations(cleanedColorData);
     console.log("Flagged Combinations", flaggedCombinations.length)

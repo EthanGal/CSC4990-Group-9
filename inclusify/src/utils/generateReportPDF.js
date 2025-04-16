@@ -12,8 +12,24 @@ const formatCriteriaName = (key) => {
     };
     return criteriaNames[key] || key.charAt(0).toUpperCase() + key.slice(1);
 };
+const loadImageAsBase64 = (src) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = src;
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL("image/png"));
+        };
+        img.onerror = reject;
+    });
+};
 
-const generateReportPDF = (index, title, reports) => {
+const generateReportPDF = async (index, title, reports) => {
     const report = reports[index];
 
     const pdf = new jsPDF("p", "mm", "a4");
@@ -39,7 +55,10 @@ const generateReportPDF = (index, title, reports) => {
         y += textLines.length * lineHeight;
     };
 
-    addLine(`Inclusify`, true, 22, [13, 110, 253]);
+    const logoData = await loadImageAsBase64("/inclusify-high-resolution-logo.png");
+    pdf.addImage(logoData, "PNG", margin, y, 100, 20);
+    y += 30;
+
     addLine(`Accessibility Report for: ${report.title}`, true, 14);
     addLine("");
     addLine("Overview of the Accessibility Report:", true, 12);

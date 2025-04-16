@@ -172,7 +172,7 @@ function evaluateFontSize(html, fontSizes = [], fontSizesWithLineNumbers = []) {
 
     // Collect the line numbers of problematic fonts
     const badFontEntries = fontSizesWithLineNumbers.filter(entry => badFontSizes.includes(entry.fontSize));
-    const lineNumbers = badFontEntries.map(entry => entry.lineNumber);
+    const lineNumbers = [...new Set(badFontEntries.map(entry => entry.lineNumber))];
 
     console.log("Bad font sizes:", badFontSizes);
     console.log("Bad font count:", badFontCount);
@@ -195,8 +195,6 @@ function evaluateFontSize(html, fontSizes = [], fontSizesWithLineNumbers = []) {
         } : null,
     };
 }
-
-
 
 function evaluateFontReadability(html, detectedFonts) {
     if (detectedFonts.length === 0) {

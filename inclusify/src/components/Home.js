@@ -7,6 +7,7 @@ import Loading from "./Loading";
 const Home = () => {
     const { username, isLoggedIn } = useContext(AuthContext); // Access username and isLoggedIn state
     const [urls, setUrls] = useState(["", "", ""]);
+    const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [scanRequest, setScanRequest] = useState(null);
@@ -16,6 +17,7 @@ const Home = () => {
         const newUrls = [...urls];
         newUrls[index] = value;
         setUrls(newUrls);
+        setErrorMessage("");
     };
 
     const handleSubmit = async () => {
@@ -56,6 +58,7 @@ const Home = () => {
                 console.log("Scan canceled by user.");
             } else {
                 console.error("Error scanning URLs:", error);
+                setErrorMessage("One or more URLs are invalid or the scan failed. Please check your input.");
             }
         }
     };
@@ -91,6 +94,13 @@ const Home = () => {
             <button id="submitSite" className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
                 {loading ? "Scanning..." : "Scan Websites"}
             </button>
+            {errorMessage && (
+                <div className="error-notification">
+                    {errorMessage}
+                </div>
+            )}
+
+
 
             {loading && <Loading progress={progress} onCancel={handleCancel}/>}
         </div>
