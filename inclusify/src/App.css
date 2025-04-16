@@ -65,9 +65,30 @@
 }
 
 
-#enter{
-    /*-webkit-text-stroke: 0.4px white;*/
+#left{
+    border-radius: 25px;
+    border-color: black;
+    border: 3px solid;
+    background-color: #6d7591;
+    height: 400px;
+    display: flex;
+    gap: 30px;
+    flex-direction: column;
+    justify-content: center;
 }
+
+#right{
+    border-radius: 25px;
+    border-color: black;
+    border: 3px solid;
+    background-color: #6d7591;
+    height: 400px;
+    display: flex;
+    gap: 30px;
+    flex-direction: column;
+    justify-content: center;
+}
+
 
 #submitSite {
     width: 500px;
@@ -123,6 +144,7 @@ input {
     border-radius: 5px;
     margin-top: 10px;
     overflow: hidden;
+    border: 1px solid black;
 }
 
 .progress-fill {
