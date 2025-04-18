@@ -1,15 +1,8 @@
 const db = require('../config/db.js');
 const puppeteer = require("puppeteer"); //use puppeteer to launch a headless chrome browser, navigate to website, and extract data
 
-let id = 1;
 
-const getUserID = (userID) => {
-    id = userID;
-    console.log(`User ID: ${id}`);
-}
-module.exports = {getUserID};
-
-async function saveWebsite(title, url) {
+async function saveWebsite(title, url, userID) {
     let connection;
     try {
         connection = await db.getConnection();
@@ -23,7 +16,7 @@ async function saveWebsite(title, url) {
         } else {
             await connection.execute(
                 'INSERT INTO Websites (webName, webURL, userID) VALUES (?, ?, ?)',
-                [title, url, id]
+                [title, url, userID]
             );
             console.log('Website Inserted!')
         }
@@ -34,7 +27,8 @@ async function saveWebsite(title, url) {
     }
 }
 
-const scanWebsite = async (url) => {
+const scanWebsite = async (url, userID) => {
+
     //launch the browser
     const browser = await puppeteer.launch({
         headless: "new", //runs in headless mode, (no UI)
@@ -59,7 +53,7 @@ const scanWebsite = async (url) => {
 
         //extract page data
         const title = await page.title();
-        await saveWebsite(title, url);
+        await saveWebsite(title, url, userID);
         const htmlContent = await page.evaluate(() => document.body.innerHTML);
         const detectedFonts = await page.evaluate(() => {
             const elements = [...document.querySelectorAll('*')];

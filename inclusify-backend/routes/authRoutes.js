@@ -9,28 +9,36 @@ require("dotenv").config();
 const router = express.Router();
 
 // Register Route
+// Register Route
 router.post("/register", async (req, res) => {
-    const {username, password} = req.body;
+    const { username, password } = req.body;
 
     if (!username || !password) {
-        return res.status(400).json({message: "Username and password are required."});
+        return res.status(400).json({ message: "Username and password are required." });
     }
 
     try {
+        // Check if username already exists
+        const [existingUsers] = await db.query("SELECT * FROM Users WHERE userName = ?", [username]);
+        if (existingUsers.length > 0) {
+            return res.status(409).json({ message: "Username already exists." });
+        }
+
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Insert user
+        // Insert new user
         const query = "INSERT INTO Users (userName, userPass) VALUES (?, ?)";
         await db.query(query, [username, hashedPassword]);
 
-        res.status(201).json({message: "User registered successfully!"});
+        res.status(201).json({ message: "User registered successfully!" });
     } catch (err) {
         console.error("Error during registration:", err.sqlMessage || err.message);
-        res.status(500).json({message: "Registration failed.", error: err.sqlMessage || err.message});
+        res.status(500).json({ message: "Registration failed.", error: err.sqlMessage || err.message });
     }
 });
+
 
 // Login Route
 router.post("/login", async (req, res) => {
@@ -69,7 +77,6 @@ router.post("/login", async (req, res) => {
             username: user.userName
         });
 
-        // getUserID(user.userID);
 
     } catch (err) {
         console.error("Login error:", err.message);

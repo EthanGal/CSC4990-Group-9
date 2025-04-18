@@ -6,7 +6,7 @@ const {isValidUrl} = require('../utils/validators');
 router.post ('/', async (req,res) => {
     const {urls} = req.body;
     if (!Array.isArray(urls)) {
-        return res.status(400).json({error: "Invalid request format: urls is not an Array"}) //todo: clean this up
+        return res.status(400).json({error: "Invalid request format: urls is not an Array"})
     }
 
     const validUrls = urls.map(url => url.trim()).filter(url => url !=='' && isValidUrl (url));
@@ -21,8 +21,6 @@ router.post ('/', async (req,res) => {
         console.error("Error in scanRoutes:", error);
         res.status(500).json ({error: "An error occurred during scanning."});
     }
-
-    //todo: save reports in the database
 
 });
 

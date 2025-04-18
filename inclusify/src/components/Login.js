@@ -1,16 +1,25 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 
 const Login = () => {
     const {login} = useContext(AuthContext);
+    const [notification, setNotification] = useState("");
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
     const [registerUsername, setRegisterUsername] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
-    const [loginError, setLoginError] = useState("");
-    const [registerError, setRegisterError] = useState("");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (notification) {
+            const timer = setTimeout(() => {
+                setNotification("");
+            }, 4000); // 4 seconds
+
+            return () => clearTimeout(timer);
+        }
+    }, [notification]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -31,15 +40,15 @@ const Login = () => {
                 navigate("/");
             } else {
                 if (data.message && data.message.toLowerCase().includes("invalid username or password")) {
-                    setLoginError("Invalid username or password.");
+                    setNotification("Invalid username or password")
                 } else {
                     // Fallback for any other unexpected error
-                    setLoginError("Invalid credentials.");
+                    setNotification("Invalid credentials.");
                 }
             }
         } catch (err) {
             console.log("Login error:", err);
-            setLoginError("An error occurred. Please try again.");
+            setNotification("An error occurred. Please try again.");
         }
     };
 
@@ -58,14 +67,14 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert("Registration successful! Please log in.");
+                setNotification("Registration successful! Please log in.");
                 setRegisterUsername("");
                 setRegisterPassword("");
             } else {
-                setRegisterError(data.message || "Registration failed");
+                setNotification(data.message || "Registration failed")
             }
         } catch (err) {
-            setRegisterError("An error occurred. Please try again.");
+            setNotification("An error occurred. Please try again.");
         }
     };
 
@@ -75,7 +84,6 @@ const Login = () => {
                 {/* Registration Section */}
                 <div id="left" className="col-md-5 left-section">
                     <h2>Register</h2>
-                    {registerError && <p className="error-message" style={{color: 'red'}}>{registerError}</p>}
                     <form onSubmit={handleRegister}>
                         <div className="form-group">
                             <label>Username:</label>
@@ -98,7 +106,6 @@ const Login = () => {
                             />
                         </div>
                         <button type="submit" className="btn btn-success">Register</button>
-                        {registerError && <p className="error-message" style={{color: 'red'}}>{registerError}</p>}
                     </form>
                 </div>
                 <div className="col">
@@ -129,11 +136,15 @@ const Login = () => {
                             />
                         </div>
                         <button type="submit" className="btn btn-primary">Login</button>
-                        {loginError && <p className="error-message"
-                                          style={{color: 'red'}}>{loginError}</p>}
                     </form>
                 </div>
             </div>
+            {notification && (
+                <div className="notification">
+                    {notification}
+                </div>
+            )}
+
         </div>
     );
 };

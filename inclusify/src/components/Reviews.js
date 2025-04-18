@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import {AuthContext} from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 
 const ReviewPage = () => {
     const [reviews, setReviews] = useState([]);
-    const {isLoggedIn, userID} = useContext(AuthContext);
+    const { isLoggedIn, userID } = useContext(AuthContext);
     const [commentText, setCommentText] = useState({});
     const [expandedComments, setExpandedComments] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
@@ -12,10 +12,17 @@ const ReviewPage = () => {
     const REVIEWS_PER_PAGE = 4;
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/reviews/scans?page=${currentPage}&limit=${REVIEWS_PER_PAGE}`)
-            .then(async res => {
+        axios
+            .get(`http://localhost:5000/reviews/scans?page=${currentPage}&limit=${REVIEWS_PER_PAGE}`)
+            .then(async (res) => {
                 const baseReviews = res.data.results;
                 setTotalReviews(res.data.total);
+
+                // Adjust page if it's invalid (no reviews on the current page)
+                if (res.data.total <= REVIEWS_PER_PAGE * (currentPage - 1)) {
+                    // If no reviews exist on this page, reset to the previous page
+                    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+                }
 
                 const reviewsWithComments = await Promise.all(
                     baseReviews.map(async (review) => {
@@ -25,21 +32,23 @@ const ReviewPage = () => {
                             return {
                                 ...review,
                                 comments: sorted.slice(0, 3),
-                                allComments: sorted
+                                allComments: sorted,
+                                ratingID: review.ratingID // this is important for badge check
                             };
+
                         } catch {
-                            return {...review, comments: [], allComments: []};
+                            return { ...review, comments: [], allComments: [] };
                         }
                     })
                 );
 
                 setReviews(reviewsWithComments);
             })
-            .catch(err => console.error(err));
+            .catch((err) => console.error(err));
     }, [currentPage]);
 
     const handleCommentChange = (webID, text) => {
-        setCommentText(prev => ({...prev, [webID]: text}));
+        setCommentText((prev) => ({ ...prev, [webID]: text }));
     };
 
     const handleCommentSubmit = (webID) => {
@@ -54,46 +63,56 @@ const ReviewPage = () => {
             return;
         }
 
-        axios.post('http://localhost:5000/reviews/comment', {webID, comment, userID})
+        axios
+            .post('http://localhost:5000/reviews/comment', { webID, comment, userID })
             .then(() => {
-                setCommentText(prev => ({...prev, [webID]: ''}));
-                axios.get(`http://localhost:5000/reviews/comments/${webID}`)
-                    .then(commentRes => {
+                setCommentText((prev) => ({ ...prev, [webID]: '' }));
+                axios
+                    .get(`http://localhost:5000/reviews/comments/${webID}`)
+                    .then((commentRes) => {
                         const sortedComments = commentRes.data.sort((a, b) => new Date(b.revDate) - new Date(a.revDate));
-                        setReviews(prevReviews =>
-                            prevReviews.map(review =>
+                        setReviews((prevReviews) =>
+                            prevReviews.map((review) =>
                                 review.webID === webID
-                                    ? {...review, comments: sortedComments.slice(0, 3), allComments: sortedComments}
+                                    ? { ...review, comments: sortedComments.slice(0, 3), allComments: sortedComments }
                                     : review
                             )
                         );
                     })
-                    .catch(err => console.error("Error fetching updated comments:", err));
+                    .catch((err) => console.error('Error fetching updated comments:', err));
             })
-            .catch(err => console.error(err));
+            .catch((err) => console.error(err));
     };
 
     const handleShowMore = (webID) => {
-        setExpandedComments(prev => ({...prev, [webID]: true}));
+        setExpandedComments((prev) => ({ ...prev, [webID]: true }));
     };
 
     const handleShowLess = (webID) => {
-        setExpandedComments(prev => ({...prev, [webID]: false}));
+        setExpandedComments((prev) => ({ ...prev, [webID]: false }));
     };
 
     const totalPages = Math.ceil(totalReviews / REVIEWS_PER_PAGE);
+
+    const handlePagination = (direction) => {
+        if (direction === 'newest') {
+            setCurrentPage(1);
+        } else if (direction === 'oldest') {
+            setCurrentPage(totalPages);
+        }
+    };
 
     const renderPagination = () => (
         <div className="pagination-controls text-center mt-4">
             <button
                 className="btn btn-outline-primary mb-3 me-2"
-                onClick={() => setCurrentPage(1)}
+                onClick={() => handlePagination('newest')}
                 disabled={currentPage === 1}
             >
                 Jump to Newest
             </button>
 
-            {Array.from({length: totalPages}, (_, idx) => (
+            {Array.from({ length: totalPages }, (_, idx) => (
                 <button
                     key={idx}
                     className={`btn mb-3 mx-1 ${currentPage === idx + 1 ? 'btn-primary' : 'btn-outline-primary'}`}
@@ -105,7 +124,7 @@ const ReviewPage = () => {
 
             <button
                 className="btn btn-outline-primary mb-3 ms-2"
-                onClick={() => setCurrentPage(totalPages)}
+                onClick={() => handlePagination('oldest')}
                 disabled={currentPage === totalPages}
             >
                 Jump to Oldest
@@ -121,8 +140,8 @@ const ReviewPage = () => {
 
             {reviews.length > 0 ? (
                 <>
-                    {reviews.map((review) => (
-                        <div key={review.webID} className="scan-item">
+                    {reviews.map((review, idx) => (
+                        <div key={`${review.webID}-${currentPage}-${idx}`} className="scan-item">
                             <table id="reviews" className="table table-bordered mt-4 mb-2">
                                 <thead className="sticky-header">
                                 <tr>
@@ -146,14 +165,21 @@ const ReviewPage = () => {
                                 </tbody>
                             </table>
 
-                            <div id="comments" className="comment-section mt-2 p-4 bg-white rounded shadow-sm border
-                            border-dark border-3">
+                            <div id="comments" className="comment-section mt-2 p-4 bg-white rounded shadow-sm border border-dark border-3">
                                 <h4>Comments</h4>
                                 {review.comments && review.comments.length > 0 ? (
                                     review.comments.map((comment, idx) => (
-                                        <div key={idx} className="mb-2">
-                                            <strong>{comment.username}</strong> -{" "}
-                                            <small>{new Date(comment.revDate).toLocaleDateString()}</small>
+                                        <div key={`${comment.revID}-${review.webID}-${currentPage}-${idx}`}
+                                             className="mb-2">
+                                            <div className="d-flex align-items-center">
+                                                <strong>{comment.username}</strong>
+                                                <span
+                                                    className="mx-2">-</span>
+                                                <small>{new Date(comment.revDate).toLocaleDateString()}</small>
+                                                {comment.ratingID !== review.ratingID && (
+                                                    <span className="badge ms-2 bg-secondary">This comment is from a previous scan</span>
+                                                )}
+                                            </div>
                                             <p className="mb-1">{comment.commentBody}</p>
                                         </div>
                                     ))
@@ -162,10 +188,7 @@ const ReviewPage = () => {
                                 )}
 
                                 {review.comments.length < review.allComments.length && !expandedComments[review.webID] && (
-                                    <button
-                                        className="btn btn-link"
-                                        onClick={() => handleShowMore(review.webID)}
-                                    >
+                                    <button className="btn btn-link" onClick={() => handleShowMore(review.webID)}>
                                         Show More Comments
                                     </button>
                                 )}
@@ -173,16 +196,21 @@ const ReviewPage = () => {
                                 {expandedComments[review.webID] && review.allComments.length > 3 && (
                                     <div>
                                         {review.allComments.slice(3).map((comment, idx) => (
-                                            <div key={idx} className="mb-2">
-                                                <strong>{comment.username}</strong> -{" "}
-                                                <small>{new Date(comment.revDate).toLocaleDateString()}</small>
+                                            <div key={`${comment.revID}-${review.webID}-${currentPage}-${idx}`}
+                                                 className="mb-2">
+                                                <div className="d-flex align-items-center">
+                                                    <strong>{comment.username}</strong>
+                                                    <span
+                                                        className="mx-2">-</span>
+                                                    <small>{new Date(comment.revDate).toLocaleDateString()}</small>
+                                                    {comment.ratingID !== review.ratingID && (
+                                                        <span className="badge ms-2 bg-secondary">This comment is from a previous scan</span>
+                                                    )}
+                                                </div>
                                                 <p className="mb-1">{comment.commentBody}</p>
                                             </div>
                                         ))}
-                                        <button
-                                            className="btn btn-link"
-                                            onClick={() => handleShowLess(review.webID)}
-                                        >
+                                        <button className="btn btn-link" onClick={() => handleShowLess(review.webID)}>
                                             Show Less
                                         </button>
                                     </div>
@@ -190,12 +218,12 @@ const ReviewPage = () => {
 
                                 {isLoggedIn && (
                                     <div className="comment-input-container mt-2 mb-4">
-                                        <textarea
-                                            className="form-control w-100"
-                                            placeholder="Write your comment..."
-                                            value={commentText[review.webID] || ''}
-                                            onChange={(e) => handleCommentChange(review.webID, e.target.value)}
-                                        ></textarea>
+                    <textarea
+                        className="form-control w-100"
+                        placeholder="Write your comment..."
+                        value={commentText[review.webID] || ''}
+                        onChange={(e) => handleCommentChange(review.webID, e.target.value)}
+                    ></textarea>
                                         <button
                                             className="btn btn-primary mt-1 mb-3 float-end"
                                             onClick={() => handleCommentSubmit(review.webID)}

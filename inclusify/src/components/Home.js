@@ -5,7 +5,8 @@ import axios from 'axios';
 import Loading from "./Loading";
 
 const Home = () => {
-    const { username, isLoggedIn } = useContext(AuthContext); // Access username and isLoggedIn state
+    const { userID } = useContext(AuthContext);
+    const { username, isLoggedIn } = useContext(AuthContext);
     const [urls, setUrls] = useState(["", "", ""]);
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -37,7 +38,7 @@ const Home = () => {
         try {
             console.log("Sending scan request with:", urls);
             const response = await axios.post("http://localhost:5000/api/scan",
-                { urls },
+                { urls, userID},
                 {
                     headers: { "Content-Type": "application/json" },
                     cancelToken: source.token
@@ -72,38 +73,52 @@ const Home = () => {
     };
 
     return (
-        <div className="container" id="homeContain">
-            <img src="/inclusify-grey-high-resolution-logo.png" width="275" id="logo" className="mt-1 "
-                 alt="HomeLogo"/>
+        <>
+            <div className="container" id="homeContain">
+                <img src="/inclusify-grey-high-resolution-logo.png" width="275" id="logo" className="mt-1 "
+                     alt="HomeLogo"/>
 
-            {isLoggedIn && <h5>Current user: {username}</h5>}
+                {isLoggedIn && <h5>Current user: {username}</h5>}
 
-            <div><h2>Copy and Paste up to 3 website URLs to scan:</h2></div>
+                <div><h2>Copy and Paste up to 3 website URLs to scan:</h2></div>
 
-            {urls.map((url, index) => (
-                <input
-                    key={index}
-                    type="text"
-                    value={url}
-                    onChange={(e) => handleChange(index, e.target.value)}
-                    placeholder={`Website URL ${index + 1}`}
-                    style={{display: "block", marginBottom: "10px"}} // TODO: Change this to CSS
-                />
-            ))}
+                {urls.map((url, index) => (
+                    <input
+                        key={index}
+                        type="text"
+                        value={url}
+                        onChange={(e) => handleChange(index, e.target.value)}
+                        placeholder={`Website URL ${index + 1}`}
+                        style={{display: "block", marginBottom: "10px"}} // TODO: Change this to CSS
+                    />
+                ))}
 
-            <button id="submitSite" className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
-                {loading ? "Scanning..." : "Scan Websites"}
-            </button>
-            {errorMessage && (
-                <div className="error-notification">
-                    {errorMessage}
-                </div>
-            )}
+                <button id="submitSite" className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
+                    {loading ? "Scanning..." : "Scan Websites"}
+                </button>
+                {errorMessage && (
+                    <div className="error-notification">
+                        {errorMessage}
+                    </div>
+                )}
 
-
-
-            {loading && <Loading progress={progress} onCancel={handleCancel}/>}
-        </div>
+                {loading && <Loading progress={progress} onCancel={handleCancel}/>}
+            </div>
+            <div className="container" id="infoContain">
+                <h2>Understanding WCAG 2.1 and ARIA</h2>
+                <p>
+                    <strong>WCAG 2.1</strong> (Web Content Accessibility Guidelines) is a set of guidelines designed to
+                    make web content more accessible to people with disabilities. It builds upon WCAG 2.0 by adding
+                    criteria to address mobile accessibility, low vision, and cognitive disabilities. With WCAG's POUR
+                    principle, the guidelines emphasize having web content be Perceivable, Operable, Understandable, and Robust.
+                </p>
+                <p>
+                    <strong>ARIA</strong> (Accessible Rich Internet Applications) is a set of attributes that can be
+                    added to HTML elements to improve accessibility, especially for dynamic content and advanced user
+                    interface controls.
+                </p>
+            </div>
+        </>
     );
 };
 

@@ -18,7 +18,15 @@ router.get('/', async (req, res) => {
                 a.TotalScore,
                 a.LatestGrade
             FROM Websites w
-            LEFT JOIN accessRatings a ON w.webID = a.webID
+            LEFT JOIN (
+                SELECT ar.*
+                FROM accessRatings ar
+                JOIN (
+                    SELECT webID, MAX(Date) AS maxDate
+                    FROM accessRatings
+                    GROUP BY webID
+                ) latest ON ar.webID = latest.webID AND ar.Date = latest.maxDate
+            ) a ON w.webID = a.webID
             WHERE w.userID = ?
             ORDER BY w.Date DESC
             LIMIT ? OFFSET ?

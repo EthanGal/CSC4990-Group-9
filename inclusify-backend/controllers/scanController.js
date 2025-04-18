@@ -66,7 +66,8 @@ async function sendFinalScoreToDB(url, score, grade, gradeDetails) {
 
 async function scanAndGrade(req, res) {
     console.log("Incoming request received in scanAndGrade!");
-    console.log("req.body:", req.body);
+    const { userID } = req.body;
+    console.log("Received User ID at Scan Controller", userID);
     if (!req.validUrls) {
         return res.status(400).json({error: "No valid URLs found for scanning."});
     }
@@ -79,7 +80,7 @@ async function scanAndGrade(req, res) {
 
             let scanResult;
             try {
-                scanResult = await scanWebsite(url);
+                scanResult = await scanWebsite(url, userID);
                 console.log(`Scan completed: ${url}`);
                 console.log(`--------------------------------`);
             } catch (scanError) {

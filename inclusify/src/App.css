@@ -40,16 +40,24 @@
 #homeContain {
     background-color: #6d7591;
     border-radius: 25px;
-    margin-top: -10px;
+    margin-top: -5px;
     margin-bottom: 2px;
     width: 100%;
     max-width: 900px;
-    height: 600px;
+    height: 550px;
     display: flex;
-    gap: 30px;
+    gap: 20px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+#infoContain{
+    margin-top: 25px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    padding: 10px 10px 5px;
+    border-radius: 6px;
 }
 
 #grades{
@@ -171,4 +179,29 @@ input {
 .error-notification::before {
     content: "⚠️";
     margin-right: 10px;
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    left: 43%;
+    transform: translateX(-50%);
+    background-color: #444;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    animation: fadeInOut 4s ease-in-out forwards;
+    max-width: 90%;
+    width: auto;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
 }
