@@ -80,7 +80,7 @@ const Home = () => {
 
                 {isLoggedIn && <h5>Current user: {username}</h5>}
 
-                <div><h2>Copy and Paste up to 3 website URLs to scan:</h2></div>
+                <div><h2 id="copy">Copy and Paste up to 3 website URLs to scan:</h2></div>
 
                 {urls.map((url, index) => (
                     <input
@@ -89,11 +89,10 @@ const Home = () => {
                         value={url}
                         onChange={(e) => handleChange(index, e.target.value)}
                         placeholder={`Website URL ${index + 1}`}
-                        style={{display: "block", marginBottom: "10px"}} // TODO: Change this to CSS
                     />
                 ))}
 
-                <button id="submitSite" className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
+                <button id="submitSite" className="btn btn-primary d-block d-md-inline-block w-100 w-md-auto" onClick={handleSubmit} disabled={loading}>
                     {loading ? "Scanning..." : "Scan Websites"}
                 </button>
                 {errorMessage && (
