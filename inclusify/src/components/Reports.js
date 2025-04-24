@@ -112,14 +112,14 @@ const Reports = () => {
                                                             value.issues.message ||
                                                             value.issues.lineNumbers?.length ||
                                                             value.issues.badFonts?.length ||
-                                                            value.issues.flaggedUniquePairs?.length
+                                                            value.issues.flaggedUniquePairs?.length > 0
                                                         );
 
                                                         return (
                                                             <tr key={key}>
                                                                 <td><strong>{formatCriteriaName(key)}</strong></td>
                                                                 <td>{value.score}</td>
-                                                                <td>{value.issues?.message || "No issues"}</td>
+                                                                <td>{value.issues?.message || "No issues Detected"}</td>
                                                                 <td>
                                                                     {/* Only show the expand button if the criteria has issues */}
                                                                     {hasIssues && key !== "tabNavigation" && key !== "aria" && (
@@ -160,8 +160,8 @@ const Reports = () => {
                                                             {value.issues?.penalty && (
                                                                 <p><strong>Penalty:</strong> {value.issues.penalty} Point(s)</p>
                                                             )}
-                                                            {value.issues?.detectedFontSizes && (
-                                                                <p><strong>Problematic Font Sizes:</strong> {value.issues.detectedFontSizes.join(", ")}</p>
+                                                            {value.issues?.problematicFontSizes && (
+                                                                <p><strong>Problematic Font Sizes:</strong> {value.issues.problematicFontSizes}</p>
                                                             )}
                                                             {value.issues?.badFonts && (
                                                                 <p><strong>Problematic Font Types:</strong> {value.issues.badFonts.join(", ")}</p>

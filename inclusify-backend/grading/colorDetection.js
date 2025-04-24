@@ -191,7 +191,6 @@ const evaluateColorAccessibility = (extractedData) => {
     const flaggedUniquePairs = removeDuplicateFlaggedPairs(flaggedCombinations);
     console.log("Flagged Unique Combinations", flaggedUniquePairs.length)
 
-
     let score = 100 - (flaggedUniquePairs.length * 10);
     score = Math.max(0, score);
 
@@ -203,7 +202,6 @@ const evaluateColorAccessibility = (extractedData) => {
         } : {}
     };
 };
-
 
 
 module.exports = { evaluateColorAccessibility };

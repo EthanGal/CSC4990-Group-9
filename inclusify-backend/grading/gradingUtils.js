@@ -241,10 +241,10 @@ function evaluateFontReadability(html, detectedFonts) {
     };
 }
 
-
 const evaluateContrast = (html, extractedData) => {
     const result = evaluateColorAccessibility(extractedData);
     console.log("ColorBlind Evaluation Result:", JSON.stringify(result, null, 2));
+    console.log(result.issues);
     return result;
 };
 

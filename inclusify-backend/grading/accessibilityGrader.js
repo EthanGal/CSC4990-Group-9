@@ -1,4 +1,3 @@
-
 const {
     evaluateHTML,
     evaluateAltText,
@@ -43,7 +42,6 @@ async function calculateAccessibilityGrade(htmlContent, detectedFonts, fontSizes
     else if (finalScore >= 60)
         grade = "D";
 
-
     return {
         finalScore: Math.round(finalScore),
         grade,
@@ -60,8 +58,8 @@ async function calculateAccessibilityGrade(htmlContent, detectedFonts, fontSizes
             contrast: {
                 score: criteriaResults.contrast.score,
                 issues: {
-                    message: criteriaResults.contrast.issues?.message || "No issues detected",
-                    flaggedUniquePairs: [...(criteriaResults.contrast.issues?.flaggedUniquePairs || [])]
+                    message: criteriaResults.contrast.issues?.message,
+                    flaggedUniquePairs: criteriaResults.contrast.issues?.flaggedUniquePairs,
                 }
             },
             tabNavigation: criteriaResults.tabNavigation
