@@ -62,7 +62,7 @@ const ScannedSitesPage = () => {
                 <>
                     {userScans.map((scan) => (
                         <div key={scan.webID} className="mb-5">
-                            <table className="table table-bordered">
+                            <table id="scannedSites" className="table table-bordered mt-4 mb-2">
                                 <thead className="table-light">
                                 <tr>
                                     <th>URL</th>

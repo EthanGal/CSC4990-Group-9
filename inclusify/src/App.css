@@ -52,13 +52,17 @@
     align-items: center;
 }
 
+
 #infoContain{
     margin-top: 25px;
     margin-bottom: 20px;
     background-color: #f8f9fa;
     padding: 10px 10px 5px;
-    border-radius: 6px;
+    border-radius: 25px;
+    border-color: black;
+    border: 3px solid;
 }
+
 
 #grades{
     border-radius: 25px !important;
@@ -67,6 +71,12 @@
 }
 
 #reviews{
+    border-radius: 25px;
+    border-color: black;
+    border: 3px solid;
+}
+
+#scannedSites{
     border-radius: 25px;
     border-color: black;
     border: 3px solid;
@@ -204,4 +214,41 @@ input {
     10% { opacity: 1; transform: translateY(0); }
     90% { opacity: 1; transform: translateY(0); }
     100% { opacity: 0; transform: translateY(20px); }
+}
+
+input{
+    display: block;
+    margin-bottom: 10px;
+}
+
+
+@media (max-width: 576px) {
+    #homeContain {
+        height: auto;
+        padding: 30px 15px;
+        gap: 15px;
+    }
+    #copy{
+        font-size: 1.2rem;
+    }
+    .table{
+        max-width: 400px;
+    }
+    #left{
+        height: 300px;
+        display: flex;
+        gap: 15px;
+        flex-direction: column;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    #right{
+        height: 300px;
+        display: flex;
+        gap: 15px;
+        flex-direction: column;
+        justify-content: center;
+        margin-top: 15px;
+    }
 }
