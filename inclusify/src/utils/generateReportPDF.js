@@ -59,6 +59,15 @@ const generateReportPDF = async (index, title, reports) => {
     pdf.addImage(logoData, "PNG", margin, y, 100, 20);
     y += 30;
 
+    const scanDate = new Date().toLocaleDateString();
+    pdf.setFontSize(12);
+    pdf.setTextColor(0, 0, 0);
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const textWidth = pdf.getTextWidth(`Scan Date: ${scanDate}`);
+
+    pdf.text(`Scan Date: ${scanDate}`, pageWidth - margin - textWidth, y - 20);
+
     addLine(`Accessibility Report for: ${report.title}`, true, 14);
     addLine("");
     addLine("Overview of the Accessibility Report:", true, 12);
