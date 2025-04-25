@@ -44,7 +44,7 @@ const Reports = () => {
     };
 
     return (
-        <div id="login" className="container">
+        <div id="report" className="container">
             <h2 id="scanResultHead">Scan Results</h2>
             {reports.length > 0 ? (
                 <table id="reportContainer" className="table table-bordered border-dark">

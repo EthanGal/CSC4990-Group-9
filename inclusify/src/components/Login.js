@@ -86,7 +86,7 @@ const Login = () => {
                     <h2>Register</h2>
                     <form onSubmit={handleRegister}>
                         <div className="form-group">
-                            <label>Username:</label>
+                            <label> <h5> Username: </h5></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -96,7 +96,7 @@ const Login = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Password:</label>
+                            <label><h5>Password:</h5></label>
                             <input
                                 type="password"
                                 className="form-control"
@@ -116,7 +116,7 @@ const Login = () => {
                     <h2>Login</h2>
                     <form onSubmit={handleLogin}>
                         <div className="form-group">
-                            <label>Username:</label>
+                            <label><h5>Username:</h5></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -126,7 +126,7 @@ const Login = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Password:</label>
+                            <label><h5>Password:</h5></label>
                             <input
                                 type="password"
                                 className="form-control"
