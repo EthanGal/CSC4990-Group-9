@@ -170,7 +170,7 @@ const ReviewPage = () => {
                                 {review.comments && review.comments.length > 0 ? (
                                     review.comments.map((comment, idx) => (
                                         <div key={`${comment.revID}-${review.webID}-${currentPage}-${idx}`}
-                                             className="mb-2">
+                                            id ="comment" className="mb-2">
                                             <div className="d-flex align-items-center">
                                                 <strong>{comment.username}</strong>
                                                 <span

@@ -107,6 +107,12 @@
     justify-content: center;
 }
 
+#comment{
+    border-radius: 6px;
+    border-color: black;
+    border: 1px solid;
+}
+
 
 #submitSite {
     width: 500px;
