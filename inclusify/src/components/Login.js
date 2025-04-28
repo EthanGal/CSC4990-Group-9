@@ -83,7 +83,7 @@ const Login = () => {
             <div className="row">
                 {/* Registration Section */}
                 <div id="left" className="col-md-5 left-section">
-                    <h2>Register</h2>
+                    <h1>Register</h1>
                     <form onSubmit={handleRegister}>
                         <div className="form-group">
                             <label> <h5> Username: </h5></label>
@@ -113,7 +113,7 @@ const Login = () => {
                 </div>
                 {/* Login Section */}
                 <div id="right" className="col-md-5 right-section">
-                    <h2>Login</h2>
+                    <h1>Login</h1>
                     <form onSubmit={handleLogin}>
                         <div className="form-group">
                             <label><h5>Username:</h5></label>
